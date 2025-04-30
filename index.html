@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>🎲 Game Tài Xỉu 🎲</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .dice {
+      font-size: 50px;
+      margin: 10px;
+    }
+    .result, .money {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎲 Game Tài Xỉu</h1>
+
+  <p>Bạn có: <span id="money">1000</span> 💰</p>
+
+  <select id="betChoice">
+    <option value="tai">Đặt Tài</option>
+    <option value="xiu">Đặt Xỉu</option>
+  </select>
+  <br>
+  <input type="number" id="betAmount" placeholder="Số tiền cược" value="100" min="1">
+
+  <br><br>
+  <button onclick="rollDice()">🎲 Tung xúc xắc</button>
+
+  <div id="diceContainer">
+    <span class="dice" id="dice1">⚀</span>
+    <span class="dice" id="dice2">⚀</span>
+    <span class="dice" id="dice3">⚀</span>
+  </div>
+
+  <div class="result" id="result">→ Kết quả sẽ hiện ở đây</div>
+  <div class="money" id="status"></div>
+</div>
+
+<script>
+  let money = 1000;
+  const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+  function rollDice() {
+    const betChoice = document.getElementById('betChoice').value;
+    const betAmount = parseInt(document.getElementById('betAmount').value);
+    const result = document.getElementById('result');
+    const status = document.getElementById('status');
+
+    if (isNaN(betAmount) || betAmount <= 0 || betAmount > money) {
+      alert("Số tiền cược không hợp lệ!");
+      return;
+    }
+
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = Math.floor(Math.random() * 6) + 1;
+    const d3 = Math.floor(Math.random() * 6) + 1;
+    const total = d1 + d2 + d3;
+
+    document.getElementById("dice1").innerText = diceFaces[d1 - 1];
+    document.getElementById("dice2").innerText = diceFaces[d2 - 1];
+    document.getElementById("dice3").innerText = diceFaces[d3 - 1];
+
+    let outcome = "";
+    if (total >= 11 && total <= 17) {
+      outcome = "tai";
+    } else if (total >= 4 && total <= 10) {
+      outcome = "xiu";
+    }
+
+    result.innerText = `Tổng: ${total} → Kết quả: ${outcome === "tai" ? "Tài" : "Xỉu"}`;
+
+    if (betChoice === outcome) {
+      money += betAmount;
+      status.innerText = `✅ Bạn thắng! +${betAmount} 💰`;
+    } else {
+      money -= betAmount;
+      status.innerText = `❌ Bạn thua! -${betAmount} 💸`;
+    }
+
+    document.getElementById('money').innerText = money;
+
+    if (money <= 0) {
+      alert("Bạn đã hết tiền! Game kết thúc.");
+      money = 0;
+      document.getElementById('money').innerText = money;
+      status.innerText = "💀 Bạn đã phá sản!";
+    }
+  }
+</script>
+
+</body>
+</html>
